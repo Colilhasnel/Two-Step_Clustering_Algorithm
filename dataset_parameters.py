@@ -33,5 +33,27 @@ class dataset:
         kV20 = 20000
         kV30 = 30000
 
+    def check_path(path):
+        if not os.path.exists(path):
+            raise Exception("The input file cannot be find")
+
+    def make_path(path):
+        if not os.path.isdir(path):
+            os.mkdir(path)
+
+    def output_dir(path=None, join=True):
+        if path == None:
+            return dataset.OUTPUT_PATH
+
+        if not join:
+            dataset.OUTPUT_PATH = path
+        else:
+            dataset.OUTPUT_PATH = os.path.join(dataset.OUTPUT_PATH, path)
+
+        dataset.make_path(dataset.OUTPUT_PATH)
+
+    check_path(INPUT_PATH)
+    make_path(OUTPUT_PATH)
+
 
 # WorkingDistance, EmissionCurrent can also be added
