@@ -5,6 +5,7 @@ import cv2
 from colors import colors
 from dataset_parameters import dataset
 from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
 import copy
 
 color_labels = [
@@ -19,7 +20,7 @@ color_labels = [
 ]
 
 # No. of Clusters for KMeans
-K = 8
+K = 4
 
 # Setting Input Directory to denoised_images
 dataset.INPUT_PATH = "output_images\Denoised_Images\S1_100k_fastNLmeansdenoising"
@@ -30,10 +31,14 @@ description_file = pd.read_csv(
 )
 
 # Output Directory
-dataset.output_dir("KMeans_K_is_8_with_centres")
+dataset.output_dir("Step_1_KMeans_K4")
 
 output_centers = pd.DataFrame(
-    columns=[dataset.Variables.Filename, dataset.Variables.Centers]
+    columns=[
+        dataset.Variables.Filename,
+        dataset.Variables.Centers,
+        dataset.Variables.Score,
+    ]
 )
 
 for file in description_file[dataset.Variables.Filename]:
@@ -53,21 +58,25 @@ for file in description_file[dataset.Variables.Filename]:
     labels = kmeans_obj.labels_
 
     # Calculating center of clusters; not using default sklearn centers attribute because not all algorithms have that attribute
-    centers_new = [np.uint8(np.average(pixel_vals[labels == i])) for i in range(0, 8)]
+    centers_new = [np.uint8(np.average(pixel_vals[labels == i])) for i in range(0, K)]
+
+    # avg_score = silhouette_score(pixel_vals, labels)
+    avg_score = 0
 
     # Writing Centers in a dataframe
     output_centers = output_centers._append(
         {
             dataset.Variables.Filename: file[:-11] + "_labeled.tif",
             dataset.Variables.Centers: copy.deepcopy(centers_new),
+            dataset.Variables.Score: avg_score,
         },
         ignore_index=True,
     )
 
     # Assigning color labels in ascending order
-    new_colors = [[0, 0, 0]] * 8
+    new_colors = [[0, 0, 0]] * K
 
-    for i in range(0, 8):
+    for i in range(0, K):
         idx = centers_new.index(min(centers_new))
         new_colors[idx] = color_labels[i]
         centers_new[idx] = 1e7

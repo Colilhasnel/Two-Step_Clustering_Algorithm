@@ -18,6 +18,7 @@ class dataset:
         Sample = "Sample"
         Filename = "Filename"
         Centers = "Centers"
+        Score = "Score"
 
     class Sample:
         S1 = "S1"

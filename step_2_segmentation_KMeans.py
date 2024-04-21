@@ -9,7 +9,7 @@ from sklearn.cluster import KMeans
 
 
 local_centers = pd.read_csv(
-    "output_images\KMeans_K_is_8_with_centres\output_centers.csv", index_col=0
+    "output_images\Step_1_KMeans_K4\output_centers.csv", index_col=0
 )
 
 global_K = 8
@@ -57,7 +57,7 @@ description_file = pd.read_csv(
 )
 
 # Setting Output Directory
-dataset.output_dir("Step_2_KMeans_K_8")
+dataset.output_dir("Step_2_KMeans_K_8_Step_1_KMeans4")
 
 for file in description_file[dataset.Variables.Filename]:
     # Loading the selected image
