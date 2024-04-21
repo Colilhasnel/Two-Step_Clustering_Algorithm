@@ -47,9 +47,16 @@ for file in image_files[dataset.Variables.Filename]:
     )
 
     # New Images Description File, for further easier use of them
-    output_description_file[dataset.Variables.Filename] = file[:-4] + "_blurred.tif"
+    output_description_file.loc[
+        output_description_file[dataset.Variables.Filename] == file,
+        dataset.Variables.Filename,
+    ] = (
+        file[:-4] + "_blurred.tif"
+    )
 
     print("Done " + file)
+
+output_description_file.reset_index(drop=True, inplace=True)
 
 output_description_file.to_csv(
     os.path.join(dataset.OUTPUT_PATH, "description_file.csv")

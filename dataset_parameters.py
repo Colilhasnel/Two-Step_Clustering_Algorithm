@@ -7,7 +7,7 @@ class dataset:
 
     OUTPUT_PATH = "output_images"
 
-    # Parameters of Images 
+    # Parameters of Images
     class Variables:
         AccelaratingVoltage = "AcceleratingVoltage"
         Magnification = "Magnification"
@@ -17,6 +17,7 @@ class dataset:
         Area = "Area"
         Sample = "Sample"
         Filename = "Filename"
+        Centers = "Centers"
 
     class Sample:
         S1 = "S1"
@@ -39,7 +40,7 @@ class dataset:
     def check_path(path):
         if not os.path.exists(path):
             raise Exception("The input file cannot be find")
-        
+
     # A function to make new path, if it not already exists
     def make_path(path):
         if not os.path.isdir(path):
