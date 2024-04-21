@@ -9,22 +9,14 @@ DESCRIPTION_FILE = pd.read_csv(dataset.INPUT_PATH)
 
 dataset.output_dir("kmeans_clustering")
 
-
-def get_images(sample, mag, k, notes=""):
-    dataset.output_dir("%s_%d__k_is_%d_%s" % (sample, mag / 1000, k, notes))
-
-    requirements = (DESCRIPTION_FILE[dataset.Variables.Sample] == sample) & (
-        DESCRIPTION_FILE[dataset.Variables.Magnification] == mag
-    )
-
-    return DESCRIPTION_FILE.loc[requirements]
-
-
 CRITERIA = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.85)
 K = 5
 
-image_files = get_images(
-    dataset.Sample.S1, dataset.Magnification.x100, K, notes="x_y_added_only_15_img"
+image_files = dataset.get_images(
+    DESCRIPTION_FILE,
+    dataset.Sample.S1,
+    dataset.Magnification.x100,
+    notes="x_y_added_only_15_img",
 )
 
 color_labels = [
@@ -46,34 +38,10 @@ for file in image_files[dataset.Variables.Filename]:
     image = image[:890, :]
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    data_points = []
+    pixel_vals = image.reshape((-1, 1))
+    pixel_vals = np.float32(pixel_vals)
 
-    L = image.shape[0]
-    B = image.shape[1]
-
-    min_intensity = np.amin(image)
-    max_intensity = np.amax(image)
-
-    for i in range(0, image.shape[0]):
-        for j in range(0, image.shape[1]):
-            data_points.append(
-                [
-                    i * 1000 / L,
-                    j * 1000 / B,
-                    (image[i, j] - min_intensity)
-                    * 1000
-                    / (max_intensity - min_intensity),
-                ]
-            )
-
-    data_points = np.array(data_points, dtype=np.float32)
-
-    # pixel_vals = image.reshape((-1, 1))
-    # pixel_vals = np.float32(pixel_vals)
-
-    retval, labels, centers = cv2.kmeans(
-        data_points, K, None, CRITERIA, 10, cv2.KMEANS_RANDOM_CENTERS
-    )
+    # Continue from reading about precomputed affitinity matrix @ https://scikit-learn.org/stable/auto_examples/cluster/plot_coin_segmentation.html#sphx-glr-auto-examples-cluster-plot-coin-segmentation-py
 
     new_centers = np.zeros((K, 3), dtype=np.uint8)
 
