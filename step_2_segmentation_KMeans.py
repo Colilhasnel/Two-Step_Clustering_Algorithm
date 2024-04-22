@@ -9,21 +9,20 @@ from sklearn.cluster import KMeans
 
 
 local_centers = pd.read_csv(
-    "output_images\Step_1_KMeans_K4\output_centers.csv", index_col=0
+    "output_images\Step_1_KMeans_K12\output_centers.csv", index_col=0
 )
 
-global_K = 8
+global_K = 6
 
 centers_array = np.array([])
 
+
 color_labels = [
-    list(colors.BLACK),
+    list(colors.GREY),
     list(colors.WHITE),
     list(colors.GREEN),
-    list(colors.CYAN),
     list(colors.BLUE),
     list(colors.YELLOW),
-    list(colors.ORANGE),
     list(colors.RED),
 ]
 
@@ -57,7 +56,7 @@ description_file = pd.read_csv(
 )
 
 # Setting Output Directory
-dataset.output_dir("Step_2_KMeans_K_8_Step_1_KMeans4")
+dataset.output_dir("Step_2_KMeans_K6_Step_1_KMeans12")
 
 for file in description_file[dataset.Variables.Filename]:
     # Loading the selected image
